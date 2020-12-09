@@ -6,8 +6,7 @@ public class Mover : MonoBehaviour
 {
     // Private fields
     NavMeshAgent navMeshAgent;
-    Ray lastRay;
-
+    
     // Start is called before the first frame update
     void Start()
     {
