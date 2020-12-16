@@ -29,7 +29,8 @@ public class Mover : MonoBehaviour
         {
             MoveToCursor();
         }
-        
+        // Update the movement animator
+        UpdateAnimator();
     }
 
     private void MoveToCursor()
@@ -49,6 +50,22 @@ public class Mover : MonoBehaviour
             // Move player to new destination
             SetTargetDestination(hit.point);
         }
+    }
+
+    // This method changes the animator according the forward player speed
+    private void UpdateAnimator()
+    {
+        // Get Nav Mesh Agent velicity
+        Vector3 velocity = GetComponent<NavMeshAgent>().velocity;
+
+        // Get the player inverse velocity
+        Vector3 localvelocity = transform.InverseTransformDirection(velocity);
+
+        // Get the player speed
+        float speed = localvelocity.z;
+
+        // Update animator blending speed
+        GetComponent<Animator>().SetFloat("ForwardSpeed", speed);
     }
 
     /**
