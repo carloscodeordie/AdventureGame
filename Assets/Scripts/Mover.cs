@@ -25,7 +25,7 @@ public class Mover : MonoBehaviour
     private void ProcessMouseInput()
     {
         // Verify if the user click on mouse left button
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             MoveToCursor();
         }
