@@ -1,46 +1,48 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class Mover : MonoBehaviour
+namespace RPG.Movement
 {
-    // Private fields
-    NavMeshAgent navMeshAgent;
-    
-    // Start is called before the first frame update
-    void Start()
+    public class Mover : MonoBehaviour
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
-    }
+        // Private fields
+        NavMeshAgent navMeshAgent;
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Update the movement animator
-        UpdateAnimator();
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            navMeshAgent = GetComponent<NavMeshAgent>();
+        }
 
-    // This method changes the animator according the forward player speed
-    private void UpdateAnimator()
-    {
-        // Get Nav Mesh Agent velicity
-        Vector3 velocity = GetComponent<NavMeshAgent>().velocity;
+        // Update is called once per frame
+        void Update()
+        {
+            // Update the movement animator
+            UpdateAnimator();
+        }
 
-        // Get the player inverse velocity
-        Vector3 localvelocity = transform.InverseTransformDirection(velocity);
+        // This method changes the animator according the forward player speed
+        private void UpdateAnimator()
+        {
+            // Get Nav Mesh Agent velicity
+            Vector3 velocity = GetComponent<NavMeshAgent>().velocity;
 
-        // Get the player speed
-        float speed = localvelocity.z;
+            // Get the player inverse velocity
+            Vector3 localvelocity = transform.InverseTransformDirection(velocity);
 
-        // Update animator blending speed
-        GetComponent<Animator>().SetFloat("ForwardSpeed", speed);
-    }
+            // Get the player speed
+            float speed = localvelocity.z;
 
-    /**
-     * Move player into target destination
-     * */
-    public void MoveTo(Vector3 destination)
-    {
-        navMeshAgent.SetDestination(destination);
+            // Update animator blending speed
+            GetComponent<Animator>().SetFloat("ForwardSpeed", speed);
+        }
+
+        /**
+         * Move player into target destination
+         * */
+        public void MoveTo(Vector3 destination)
+        {
+            navMeshAgent.SetDestination(destination);
+        }
     }
 }
