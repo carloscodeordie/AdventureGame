@@ -27,7 +27,9 @@ namespace RPG.Control
                 CombatTarget target = hit.transform.GetComponent<CombatTarget>();
 
                 // Validates if the target is an enemy
-                if (target == null) continue;
+                if (target == null) {
+                    continue;
+                }
                 // Attack if the target is an enemy
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -54,7 +56,7 @@ namespace RPG.Control
                 if (Input.GetMouseButton(0))
                 {
                     // Move player to new destination
-                    GetComponent<Mover>().MoveTo(hit.point);
+                    GetComponent<Mover>().StartMoveAction(hit.point);
                 }
                 return true;
             }
