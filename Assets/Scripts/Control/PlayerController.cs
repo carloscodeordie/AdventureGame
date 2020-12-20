@@ -11,11 +11,11 @@ namespace RPG.Control
         // Update method
         private void Update()
         {
-            InteractWithCombat();
-            InteractWithMovement();
+            if (InteractWithCombat()) return;
+            if (InteractWithMovement()) return;
         }
 
-        private void InteractWithCombat()
+        private bool InteractWithCombat()
         {
             // throws a ray that cross everything in the mouse position
             RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
@@ -34,21 +34,13 @@ namespace RPG.Control
                     // Attack the enemy
                     GetComponent<Fighter>().Attack(target);
                 }
+                return true;
             }
+            return false;
         }
 
         // Method that allows to iteract with the character movement
-        private void InteractWithMovement()
-        {
-            // Verify if the user click on mouse left button
-            if (Input.GetMouseButton(0))
-            {
-                MoveToCursor();
-            }
-        }
-
-        // Move character where the player clicks
-        private void MoveToCursor()
+        private bool InteractWithMovement()
         {
             // Variable that contains the click position
             RaycastHit hit;
@@ -59,9 +51,14 @@ namespace RPG.Control
             // Validate if the ray hit some valid terrain
             if (hasHit)
             {
-                // Move player to new destination
-                GetComponent<Mover>().MoveTo(hit.point);
+                if (Input.GetMouseButton(0))
+                {
+                    // Move player to new destination
+                    GetComponent<Mover>().MoveTo(hit.point);
+                }
+                return true;
             }
+            return false;
         }
 
         // Method used to get a ray from the camara to mouse position
