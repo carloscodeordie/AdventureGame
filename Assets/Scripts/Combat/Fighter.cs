@@ -40,7 +40,8 @@ namespace RPG.Combat
                 // Stop the movement
                 mover.Cancel();
 
-                // TODO: Moment to attack
+                // Trigger attack animation
+                AttackBehaviour();
             }
             // The player is not in range to attack
             else
@@ -50,6 +51,17 @@ namespace RPG.Combat
             }
         }
 
+        /**
+         * Set Attack Animation
+         */ 
+        private void AttackBehaviour()
+        {
+            GetComponent<Animator>().SetTrigger("Attack");
+        }
+
+        /**
+         * Validates if the player is in weapon range for enemy
+         */ 
         private bool validateIsInRange()
         {
             // Finds if the player is in the weapon range to enemy
@@ -74,6 +86,14 @@ namespace RPG.Combat
         {
             // Reset the target
             target = null;
+        }
+
+        /**
+         * Animation event that is triggered when animation makes the hit 
+         */
+        public void Hit()
+        {
+            print("Makes a hit...");
         }
     }
 }
