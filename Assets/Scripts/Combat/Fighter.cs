@@ -8,12 +8,15 @@ namespace RPG.Combat
     {
         // Distance from enemy when the player is attacking him
         [SerializeField] float weaponRange = 2f;
+        [SerializeField] float timeBetweenAttacks = 1f;
+        [SerializeField] float weaponDamage = 20f;
 
         // Private fields
         private Mover mover;
 
         // Enemy variable
         Transform target;
+        float timeSinceLastAttack = 0f;
 
         // Start method
         private void Start()
@@ -24,13 +27,18 @@ namespace RPG.Combat
         // Update method
         private void Update()
         {
+            // Increase time since last attack
+            timeSinceLastAttack += Time.deltaTime;
+
+            // Returns if no target is selected
             if (target == null) return;
 
+            // Move player to enemy
             InteractWithEnemyRange();
         }
 
         /**
-         * Move the player close to enemy in order to attack him 
+         * Move the player close to enemy in order to attack it 
          */
         private void InteractWithEnemyRange()
         {
@@ -56,12 +64,27 @@ namespace RPG.Combat
          */ 
         private void AttackBehaviour()
         {
-            GetComponent<Animator>().SetTrigger("Attack");
+            if (timeSinceLastAttack >= timeBetweenAttacks)
+            {
+                // triggers attack animation event
+                GetComponent<Animator>().SetTrigger("Attack");
+                // Reset the time since last attack
+                timeSinceLastAttack = 0f;
+            }
+        }
+
+        /**
+         * Animation event that is triggered when animation makes the hit 
+         */
+        public void Hit()
+        {
+            // The enemy takes damage
+            target.GetComponent<Health>().TakeDamage(weaponDamage);
         }
 
         /**
          * Validates if the player is in weapon range for enemy
-         */ 
+         */
         private bool validateIsInRange()
         {
             // Finds if the player is in the weapon range to enemy
@@ -86,14 +109,6 @@ namespace RPG.Combat
         {
             // Reset the target
             target = null;
-        }
-
-        /**
-         * Animation event that is triggered when animation makes the hit 
-         */
-        public void Hit()
-        {
-            print("Makes a hit...");
         }
     }
 }
