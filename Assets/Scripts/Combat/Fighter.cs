@@ -15,7 +15,7 @@ namespace RPG.Combat
         private Mover mover;
 
         // Enemy variable
-        Transform target;
+        Health target;
         float timeSinceLastAttack = 0f;
 
         // Start method
@@ -32,6 +32,9 @@ namespace RPG.Combat
 
             // Returns if no target is selected
             if (target == null) return;
+
+            // Don't do anything is the target is dead
+            if (target.IsDead()) return;
 
             // Move player to enemy
             InteractWithEnemyRange();
@@ -55,7 +58,7 @@ namespace RPG.Combat
             else
             {
                 // Move towards the enemy
-                mover.MoveTo(target.position);
+                mover.MoveTo(target.transform.position);
             }
         }
 
@@ -78,8 +81,11 @@ namespace RPG.Combat
          */
         public void Hit()
         {
-            // The enemy takes damage
-            target.GetComponent<Health>().TakeDamage(weaponDamage);
+            if (target != null)
+            {
+                // The enemy takes damage
+                target.TakeDamage(weaponDamage);
+            }
         }
 
         /**
@@ -88,7 +94,7 @@ namespace RPG.Combat
         private bool validateIsInRange()
         {
             // Finds if the player is in the weapon range to enemy
-            return Vector3.Distance(transform.position, target.position) < weaponRange;
+            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
         }
 
         /*
@@ -99,7 +105,7 @@ namespace RPG.Combat
             // Tells the action scheduler to make an attack
             GetComponent<ActionScheduler>().StartAction(this);
             // Set the new target enemy to attack him
-            target = combatTarget.transform;
+            target = combatTarget.GetComponent<Health>();
         }
 
         /*
@@ -109,6 +115,8 @@ namespace RPG.Combat
         {
             // Reset the target
             target = null;
+            // Cancel Attack Animation
+            GetComponent<Animator>().SetTrigger("StopAttack");
         }
     }
 }
