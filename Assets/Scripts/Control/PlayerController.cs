@@ -26,10 +26,7 @@ namespace RPG.Control
                 // Verify if the ray hits an enemy
                 CombatTarget target = hit.transform.GetComponent<CombatTarget>();
 
-                // Validates if the target is an enemy
-                if (target == null) {
-                    continue;
-                }
+                if (!GetComponent<Fighter>().CanAttack(target)) { continue; }
                 // Attack if the target is an enemy
                 if (Input.GetMouseButtonDown(0))
                 {

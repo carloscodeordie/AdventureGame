@@ -67,13 +67,28 @@ namespace RPG.Combat
          */ 
         private void AttackBehaviour()
         {
+            // Look at the enemy before hitting him
+            transform.LookAt(target.transform);
+
             if (timeSinceLastAttack >= timeBetweenAttacks)
             {
-                // triggers attack animation event
-                GetComponent<Animator>().SetTrigger("Attack");
-                // Reset the time since last attack
+                // Triggers animation
+                TriggerAttack();
+                // Reset time to attack 
                 timeSinceLastAttack = 0f;
             }
+        }
+
+        /**
+         * Triggers events in attack animation
+         */ 
+        private void TriggerAttack()
+        {
+            // reset trigger stop attack animation event
+            GetComponent<Animator>().ResetTrigger("StopAttack");
+            // triggers attack animation event
+            GetComponent<Animator>().SetTrigger("Attack");
+            // Reset the time since last attack
         }
 
         /**
@@ -81,11 +96,11 @@ namespace RPG.Combat
          */
         public void Hit()
         {
-            if (target != null)
-            {
-                // The enemy takes damage
-                target.TakeDamage(weaponDamage);
-            }
+            // Don't hit if there is no target of the target moves
+            if (target == null) return;
+            
+            // The enemy takes damage
+            target.TakeDamage(weaponDamage);
         }
 
         /**
@@ -95,6 +110,20 @@ namespace RPG.Combat
         {
             // Finds if the player is in the weapon range to enemy
             return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
+        }
+
+        /**
+         * Validate if the player can attack an enemy
+         */ 
+        public bool CanAttack(CombatTarget combatTarget)
+        {
+            // Validate if there is an enemy
+            if (combatTarget == null) { return false; }
+            
+            // Get Target Health
+            Health targetToTest = combatTarget.GetComponent<Health>();
+            // Validate if there is a valid enemy and if is not dead
+            return targetToTest != null && !targetToTest.IsDead();
         }
 
         /*
@@ -115,6 +144,17 @@ namespace RPG.Combat
         {
             // Reset the target
             target = null;
+            // Reset attack animations 
+            StopAttack();
+        }
+
+        /**
+         * Reset attack animations
+         */
+        private void StopAttack()
+        {
+            // Cancel Attack Animation
+            GetComponent<Animator>().ResetTrigger("Attack");
             // Cancel Attack Animation
             GetComponent<Animator>().SetTrigger("StopAttack");
         }
