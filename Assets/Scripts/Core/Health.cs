@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPG.Combat
+namespace RPG.Core
 {
     public class Health : MonoBehaviour
     {
@@ -13,15 +13,15 @@ namespace RPG.Combat
         // State variables
         private bool isDead = false;
 
-        // Getters
+        // Getters for isDead state variable
         public bool IsDead()
         {
             return isDead;
         }
 
         /**
-         * Player or enemy takes damage 
-         */ 
+         * This method allows the player or enemy take damage 
+         */
         public void TakeDamage(float damage)
         {
             // Reduce health
@@ -30,8 +30,8 @@ namespace RPG.Combat
         }
 
         /**
-         * Validates if the player or enemy is death
-         */ 
+         * This method validates if the player or enemy is death
+         */
         private void ValidatesHealth()
         {
             // check if player or enemy has enough health points
@@ -41,6 +41,9 @@ namespace RPG.Combat
             }
         }
 
+        /**
+         * This method determines the player or enemy behavior when it dies
+         */
         private void Die()
         {
             // Don't do anything if the player or enemy is already dead
@@ -49,6 +52,8 @@ namespace RPG.Combat
             isDead = true;
             // triggers Death animation event
             GetComponent<Animator>().SetTrigger("Death");
+            // Cancel current action
+            GetComponent<ActionScheduler>().CancelCurrentAction();
         }
     }
 }

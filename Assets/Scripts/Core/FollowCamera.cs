@@ -9,6 +9,7 @@ namespace RPG.Core
         // Update is called once per frame
         void LateUpdate()
         {
+            // Set the camera on the player position
             transform.position = target.position;
         }
     }

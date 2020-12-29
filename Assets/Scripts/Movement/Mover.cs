@@ -11,19 +11,32 @@ namespace RPG.Movement
         // Private fields
         NavMeshAgent navMeshAgent;
         Animator animator;
+        Health health;
 
         // Start is called before the first frame update
         void Start()
         {
             navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
+            health = GetComponent<Health>();
         }
 
         // Update is called once per frame
         void Update()
         {
+            // Enable the navmesh if the player or enemy is not dead
+            EnableNavMesh();
+
             // Update the movement animator
             UpdateAnimator();
+        }
+
+        /**
+         * This method enable the navmesh if the player or enemy is not dead
+         */
+        private void EnableNavMesh()
+        {
+            navMeshAgent.enabled = !health.IsDead();
         }
 
         /**
@@ -45,7 +58,7 @@ namespace RPG.Movement
         }
 
         /**
-         * Start movement player action 
+         * This method start movement player action 
          * */
         public void StartMoveAction(Vector3 destination)
         {
@@ -56,7 +69,7 @@ namespace RPG.Movement
         }
 
         /**
-         * Move player into target destination
+         * This method moves the player into target destination
          * */
         public void MoveTo(Vector3 destination)
         {
@@ -65,7 +78,7 @@ namespace RPG.Movement
         }
 
         /**
-         * Cancel NavMesh Agent movement
+         * This method cancel NavMesh Agent movement
          * */
         public void Cancel()
         {

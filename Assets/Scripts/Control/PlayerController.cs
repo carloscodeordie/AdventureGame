@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using RPG.Core;
 using RPG.Movement;
 using RPG.Combat;
 
@@ -8,13 +8,36 @@ namespace RPG.Control
 {
     public class PlayerController : MonoBehaviour
     {
+        // Private fields
+        Health health;
+
+        // Start method
+        private void Start()
+        {
+            health = GetComponent<Health>();
+        }
+
         // Update method
         private void Update()
         {
+            // If the enemy is dead, don't do anything
+            if (health.IsDead()) { return; }
+
             if (InteractWithCombat()) return;
             if (InteractWithMovement()) return;
         }
 
+        /*
+         * This method method is used to get a ray from the camara to mouse position
+         */
+        private static Ray GetMouseRay()
+        {
+            return Camera.main.ScreenPointToRay(Input.mousePosition);
+        }
+
+        /**
+         * This method allow the player to interact with the combat
+         */
         private bool InteractWithCombat()
         {
             // throws a ray that cross everything in the mouse position
@@ -39,7 +62,9 @@ namespace RPG.Control
             return false;
         }
 
-        // Method that allows to iteract with the character movement
+        /**
+         * This method method allows to interact with the character movement
+         */
         private bool InteractWithMovement()
         {
             // Variable that contains the click position
@@ -59,12 +84,6 @@ namespace RPG.Control
                 return true;
             }
             return false;
-        }
-
-        // Method used to get a ray from the camara to mouse position
-        private static Ray GetMouseRay()
-        {
-            return Camera.main.ScreenPointToRay(Input.mousePosition);
         }
     }
 }

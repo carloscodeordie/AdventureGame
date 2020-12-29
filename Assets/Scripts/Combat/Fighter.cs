@@ -16,7 +16,7 @@ namespace RPG.Combat
 
         // Enemy variable
         Health target;
-        float timeSinceLastAttack = 0f;
+        float timeSinceLastAttack = Mathf.Infinity;
 
         // Start method
         private void Start()
@@ -41,7 +41,7 @@ namespace RPG.Combat
         }
 
         /**
-         * Move the player close to enemy in order to attack it 
+         * This method moves the player close to enemy in order to attack it 
          */
         private void InteractWithEnemyRange()
         {
@@ -63,8 +63,8 @@ namespace RPG.Combat
         }
 
         /**
-         * Set Attack Animation
-         */ 
+         * This method set the attack animation
+         */
         private void AttackBehaviour()
         {
             // Look at the enemy before hitting him
@@ -80,8 +80,8 @@ namespace RPG.Combat
         }
 
         /**
-         * Triggers events in attack animation
-         */ 
+         * This method triggers events when attack animation occurs
+         */
         private void TriggerAttack()
         {
             // reset trigger stop attack animation event
@@ -92,7 +92,7 @@ namespace RPG.Combat
         }
 
         /**
-         * Animation event that is triggered when animation makes the hit 
+         * This method is triggered when when animation makes the hit 
          */
         public void Hit()
         {
@@ -104,7 +104,7 @@ namespace RPG.Combat
         }
 
         /**
-         * Validates if the player is in weapon range for enemy
+         * This method validatess if the player is in weapon range for enemy
          */
         private bool validateIsInRange()
         {
@@ -113,8 +113,8 @@ namespace RPG.Combat
         }
 
         /**
-         * Validate if the player can attack an enemy
-         */ 
+         * This method validates if the player can attack an enemy
+         */
         public bool CanAttack(GameObject combatTarget)
         {
             // Validate if there is an enemy
@@ -127,8 +127,8 @@ namespace RPG.Combat
         }
 
         /*
-         * Set the target enemy to attack
-         */ 
+         * This method set the target enemy to attack
+         */
         public void Attack(GameObject combatTarget)
         {
             // Tells the action scheduler to make an attack
@@ -138,7 +138,7 @@ namespace RPG.Combat
         }
 
         /*
-         * Cancel the attack
+         * This method cancel the attack
          */
         public void Cancel()
         {
@@ -149,7 +149,7 @@ namespace RPG.Combat
         }
 
         /**
-         * Reset attack animations
+         * This method reset the attack animations
          */
         private void StopAttack()
         {
