@@ -9,15 +9,17 @@ namespace RPG.Control {
     {
         // Editor properties
         [SerializeField] public float chaseDistance = 5f;
+        [SerializeField] public float suspicionTime = 3f;
 
         // Private fields
-        GameObject player;
-        Fighter fighter;
-        Health health;
-        Mover mover;
+        private GameObject player;
+        private Fighter fighter;
+        private Health health;
+        private Mover mover;
 
         // State variables
-        Vector3 guardLocation;
+        private Vector3 guardLocation;
+        private float timeSinceLastSawPlayer = Mathf.Infinity;
 
         // Start method
         private void Start()
@@ -52,14 +54,50 @@ namespace RPG.Control {
             // Validate if the player is in chase distance and can be attacked
             if (ValidateIsInRange() && fighter.CanAttack(player))
             {
-                // Attack the player
-                fighter.Attack(player);
+                // Reset time since last saw player
+                timeSinceLastSawPlayer = 0f;
+                // Set Attack behavior
+                AttackBehavior();
+            }
+            else if (timeSinceLastSawPlayer < suspicionTime)
+            {
+                // Set Suspicion behavior
+                Suspicionbehavior();
             }
             else
             {
-                // Move the enemy to his guard location
-                mover.StartMoveAction(guardLocation);
+                GuardBehavior();
             }
+
+            // Increase time since last saw player
+            timeSinceLastSawPlayer += Time.deltaTime;
+        }
+
+        /**
+         * This method indicates how the enemy attack behavior will be
+         */
+        private void AttackBehavior()
+        {
+            // Attack the player
+            fighter.Attack(player);
+        }
+
+        /**
+         * This method indicates how the enemy suspicion behavior will be
+         */
+        private void Suspicionbehavior()
+        {
+            // Suspicion state
+            GetComponent<ActionScheduler>().CancelCurrentAction();
+        }
+
+        /**
+         * This method indicates how the enemy guard behavior will be
+         */
+        private void GuardBehavior()
+        {
+            // Move the enemy to his guard location
+            mover.StartMoveAction(guardLocation);
         }
 
         /**
