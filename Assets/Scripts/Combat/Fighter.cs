@@ -115,7 +115,7 @@ namespace RPG.Combat
         /**
          * Validate if the player can attack an enemy
          */ 
-        public bool CanAttack(CombatTarget combatTarget)
+        public bool CanAttack(GameObject combatTarget)
         {
             // Validate if there is an enemy
             if (combatTarget == null) { return false; }
@@ -129,7 +129,7 @@ namespace RPG.Combat
         /*
          * Set the target enemy to attack
          */ 
-        public void Attack(CombatTarget combatTarget)
+        public void Attack(GameObject combatTarget)
         {
             // Tells the action scheduler to make an attack
             GetComponent<ActionScheduler>().StartAction(this);
@@ -140,7 +140,7 @@ namespace RPG.Combat
         /*
          * Cancel the attack
          */
-        void IAction.Cancel()
+        public void Cancel()
         {
             // Reset the target
             target = null;
