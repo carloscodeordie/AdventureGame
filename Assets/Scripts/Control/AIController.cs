@@ -38,7 +38,6 @@ namespace RPG.Control {
             health = GetComponent<Health>();
             // Find the Mover component
             mover = GetComponent<Mover>();
-
             // Save initial guard location
             guardPosition = transform.position;
         }
@@ -110,35 +109,50 @@ namespace RPG.Control {
          */
         private void PatrolBehavior()
         {
+            // Set next position to guard position
             Vector3 nextPosition = guardPosition;
+            // Verify if there is an existing patrol path
             if (patrolPath != null)
             {
+                // Verify if the enemy is in the next waypoint
                 if (AtWaypoint())
                 {
+                    // Reset time for waypoint
                     timeSinceArrivedAtWaypoint = 0f;
+                    // Move to the next waypoint
                     CycleWaypoint();
                 }
+                // Move the enemy to the target waypoint
                 nextPosition = GetCurrentWaypoint();
             }
+            // Move to the next waypoint once the dwell time is completed
             if (timeSinceArrivedAtWaypoint > waypointDwellTime)
             {
                 // Move the enemy to his guard location
                 mover.StartMoveAction(nextPosition);
             }
-            
         }
 
+        /**
+         * verify if the enemy is in the waypoint location
+         */ 
         private bool AtWaypoint()
         {
             float distanceToWaypoint = Vector3.Distance(transform.position, GetCurrentWaypoint());
             return distanceToWaypoint < waypointTolerance;
         }
 
+        /**
+         * Set the target to the next waypoint
+         */
         private void CycleWaypoint()
         {
             currentWaypointIndex = patrolPath.GetNextIndex(currentWaypointIndex);
         }
 
+        /**
+         * Get the current waypoint location
+         */
         private Vector3 GetCurrentWaypoint()
         {
             return patrolPath.GetWaypoint(currentWaypointIndex);
@@ -160,6 +174,7 @@ namespace RPG.Control {
          */ 
         private void OnDrawGizmosSelected()
         {
+            // Display the chase range gizmo
             DisplayChaseRange();
         }
 
