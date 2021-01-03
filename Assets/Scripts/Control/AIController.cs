@@ -2,6 +2,7 @@
 using RPG.Core;
 using RPG.Combat;
 using RPG.Movement;
+using System;
 
 namespace RPG.Control {
 
@@ -10,6 +11,9 @@ namespace RPG.Control {
         // Editor properties
         [SerializeField] public float chaseDistance = 5f;
         [SerializeField] public float suspicionTime = 3f;
+        [SerializeField] PatrolPath patrolPath;
+        [SerializeField] float waypointTolerance = 1f;
+        [SerializeField] float waypointDwellTime = 3f;
 
         // Private fields
         private GameObject player;
@@ -18,8 +22,10 @@ namespace RPG.Control {
         private Mover mover;
 
         // State variables
-        private Vector3 guardLocation;
+        private Vector3 guardPosition;
         private float timeSinceLastSawPlayer = Mathf.Infinity;
+        private float timeSinceArrivedAtWaypoint = Mathf.Infinity;
+        private int currentWaypointIndex = 0;
 
         // Start method
         private void Start()
@@ -34,7 +40,7 @@ namespace RPG.Control {
             mover = GetComponent<Mover>();
 
             // Save initial guard location
-            guardLocation = transform.position;
+            guardPosition = transform.position;
         }
 
         // Update each frame
@@ -54,8 +60,6 @@ namespace RPG.Control {
             // Validate if the player is in chase distance and can be attacked
             if (ValidateIsInRange() && fighter.CanAttack(player))
             {
-                // Reset time since last saw player
-                timeSinceLastSawPlayer = 0f;
                 // Set Attack behavior
                 AttackBehavior();
             }
@@ -66,11 +70,19 @@ namespace RPG.Control {
             }
             else
             {
-                GuardBehavior();
+                // Set Patrol behavior
+                PatrolBehavior();
             }
 
+            UpdateTimers();
+        }
+
+        private void UpdateTimers()
+        {
             // Increase time since last saw player
             timeSinceLastSawPlayer += Time.deltaTime;
+            // Increase time since enemy arrived to waypoint
+            timeSinceArrivedAtWaypoint += Time.deltaTime;
         }
 
         /**
@@ -78,6 +90,8 @@ namespace RPG.Control {
          */
         private void AttackBehavior()
         {
+            // Reset time since last saw player
+            timeSinceLastSawPlayer = 0f;
             // Attack the player
             fighter.Attack(player);
         }
@@ -94,10 +108,40 @@ namespace RPG.Control {
         /**
          * This method indicates how the enemy guard behavior will be
          */
-        private void GuardBehavior()
+        private void PatrolBehavior()
         {
-            // Move the enemy to his guard location
-            mover.StartMoveAction(guardLocation);
+            Vector3 nextPosition = guardPosition;
+            if (patrolPath != null)
+            {
+                if (AtWaypoint())
+                {
+                    timeSinceArrivedAtWaypoint = 0f;
+                    CycleWaypoint();
+                }
+                nextPosition = GetCurrentWaypoint();
+            }
+            if (timeSinceArrivedAtWaypoint > waypointDwellTime)
+            {
+                // Move the enemy to his guard location
+                mover.StartMoveAction(nextPosition);
+            }
+            
+        }
+
+        private bool AtWaypoint()
+        {
+            float distanceToWaypoint = Vector3.Distance(transform.position, GetCurrentWaypoint());
+            return distanceToWaypoint < waypointTolerance;
+        }
+
+        private void CycleWaypoint()
+        {
+            currentWaypointIndex = patrolPath.GetNextIndex(currentWaypointIndex);
+        }
+
+        private Vector3 GetCurrentWaypoint()
+        {
+            return patrolPath.GetWaypoint(currentWaypointIndex);
         }
 
         /**

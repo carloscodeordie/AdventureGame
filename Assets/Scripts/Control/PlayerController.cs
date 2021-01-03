@@ -3,7 +3,6 @@ using RPG.Core;
 using RPG.Movement;
 using RPG.Combat;
 
-
 namespace RPG.Control
 {
     public class PlayerController : MonoBehaviour
@@ -28,7 +27,7 @@ namespace RPG.Control
         }
 
         /*
-         * This method method is used to get a ray from the camara to mouse position
+         * This method is used to get a ray from the camara to mouse position
          */
         private static Ray GetMouseRay()
         {
@@ -52,7 +51,7 @@ namespace RPG.Control
                 if (target == null || !GetComponent<Fighter>().CanAttack(target.gameObject)) { continue; }
                 
                 // Attack if the target is an enemy
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButton(0))
                 {
                     // Attack the enemy
                     GetComponent<Fighter>().Attack(target.gameObject);
