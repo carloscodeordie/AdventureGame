@@ -78,7 +78,7 @@ namespace RPG.Control
                 if (Input.GetMouseButton(0))
                 {
                     // Move player to new destination
-                    GetComponent<Mover>().StartMoveAction(hit.point);
+                    GetComponent<Mover>().StartMoveAction(hit.point, 1f);
                 }
                 return true;
             }

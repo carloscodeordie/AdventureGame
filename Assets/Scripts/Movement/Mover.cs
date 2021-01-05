@@ -7,6 +7,7 @@ namespace RPG.Movement
     public class Mover : MonoBehaviour, IAction
     {
         [SerializeField] Transform target;
+        [SerializeField] float maxSpeed = 6f;
 
         // Private fields
         NavMeshAgent navMeshAgent;
@@ -60,20 +61,21 @@ namespace RPG.Movement
         /**
          * This method start movement player action 
          * */
-        public void StartMoveAction(Vector3 destination)
+        public void StartMoveAction(Vector3 destination, float speedFraction)
         {
             // Tells the action scheduler to make a movement
             GetComponent<ActionScheduler>().StartAction(this);
             // Move to new destination
-            MoveTo(destination);
+            MoveTo(destination, speedFraction);
         }
 
         /**
          * This method moves the player into target destination
          * */
-        public void MoveTo(Vector3 destination)
+        public void MoveTo(Vector3 destination, float speedFraction)
         {
             navMeshAgent.SetDestination(destination);
+            navMeshAgent.speed = maxSpeed * Mathf.Clamp01(speedFraction);
             navMeshAgent.isStopped = false;
         }
 

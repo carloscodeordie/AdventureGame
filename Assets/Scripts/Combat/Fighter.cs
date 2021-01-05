@@ -58,7 +58,7 @@ namespace RPG.Combat
             else
             {
                 // Move towards the enemy
-                mover.MoveTo(target.transform.position);
+                mover.MoveTo(target.transform.position, 1f);
             }
         }
 
