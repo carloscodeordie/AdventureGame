@@ -146,6 +146,8 @@ namespace RPG.Combat
             target = null;
             // Reset attack animations 
             StopAttack();
+            // Cancel movement
+            GetComponent<Mover>().Cancel();
         }
 
         /**
